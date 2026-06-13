@@ -1,24 +1,30 @@
-// ... (quizData aynı kalıyor)
+const quizData = [
+    {
+        question: "Hangi tür hikayeler seni daha çok çeker?",
+        answers: [
+            { text: "Psikolojik Gerilim", type: "psikoloji" },
+            { text: "Strateji", type: "strateji" }
+        ]
+    }
+];
 
-const results = {
-    psikoloji: { title: "Zihnin Arka Kapısı", desc: "Derin bir düşünürsün, olayların perde arkasını görme yeteneğin var.", emoji: "🧠" },
-    strateji: { title: "Zodiack Stratejisti", desc: "Planlı, hırslı ve her hamleni hesaplayan bir oyun kurucusun.", emoji: "♟️" },
-    gizem: { title: "Gölge Bahçesi Yolcusu", desc: "Gizemli ve estetik bir ruha sahipsin, karanlığın güzelliğini keşfediyorsun.", emoji: "🌙" }
-};
+let currentQ = 0;
+let scores = { psikoloji: 0, strateji: 0 };
 
-// ... (loadQuiz ve selectAnswer aynı kalıyor)
+function loadQuiz() {
+    const q = quizData[currentQ];
+    document.getElementById("question").innerText = q.question;
+    const buttons = document.getElementById("answer-buttons");
+    buttons.innerHTML = q.answers.map(ans => 
+        `<button onclick="selectAnswer('${ans.type}')">${ans.text}</button>`
+    ).join('');
+}
 
-function showResult() {
-    const topType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-    const res = results[topType];
-
-    document.getElementById("quiz").innerHTML = `
-        <h2 style="color:#ff4757;">${res.title}</h2>
-        <!-- GÖRSEL YERİNE EMOJİ -->
-        <div style="font-size: 80px; margin: 20px 0;">${res.emoji}</div>
-        <p style="font-size:18px;">${res.desc}</p>
-        <button onclick="location.reload()" style="background:#ff4757;">Tekrar Dene</button>
-    `;
+function selectAnswer(type) {
+    scores[type]++;
+    currentQ++;
+    if (currentQ < quizData.length) loadQuiz();
+    else document.getElementById("quiz").innerHTML = "<h2>Bitti!</h2>";
 }
 
 loadQuiz();
